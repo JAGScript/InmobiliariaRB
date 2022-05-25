@@ -1,0 +1,7 @@
+﻿CREATE TABLE [dbo].[TRANSACCIONROL]
+(
+	[IDTRANSACCIONROL]  INT IDENTITY(1,1)   NOT NULL , 
+    [IDROL]             INT                 NULL, 
+    [IDTRANSACCION]     INT                 NULL,
+    CONSTRAINT [PK_TransaccionRol] PRIMARY KEY (IDTRANSACCIONROL)
+)

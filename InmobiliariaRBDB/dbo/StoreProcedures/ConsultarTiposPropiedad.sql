@@ -1,0 +1,9 @@
+﻿CREATE PROCEDURE [dbo].[ConsultarTiposPropiedad]
+	@i_id_tipo INT = NULL
+AS
+
+SELECT	* 
+FROM	dbo.TIPO_PROPIEDAD 
+WHERE	IDTIPOPROPIEDAD = ISNULL(@i_id_tipo, IDTIPOPROPIEDAD)
+
+RETURN 0

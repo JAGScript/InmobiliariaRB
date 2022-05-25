@@ -1,0 +1,7 @@
+﻿CREATE TABLE [dbo].[ROL]
+(
+	[IDROL]     INT IDENTITY(1,1)   NOT NULL , 
+    [NOMBREROL] VARCHAR(50)         NULL, 
+    [ESTADOROL] BIT                 NULL,
+    CONSTRAINT [PK_ROL] PRIMARY KEY (IDROL)
+)

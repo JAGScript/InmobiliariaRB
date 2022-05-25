@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>InmobiliariaRBDB</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{78898372-e1cb-439b-a4bb-df6ded981665}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql130DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath>
+    </RootPath>
+    <RootNamespace>InmobiliariaRBDB</RootNamespace>
+    <AssemblyName>InmobiliariaRBDB</AssemblyName>
+    <ModelCollation>1033, CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="dbo" />
+    <Folder Include="Scripts" />
+    <Folder Include="dbo\StoreProcedures" />
+    <Folder Include="dbo\Tables" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="dbo\Tables\USUARIO.sql" />
+    <Build Include="dbo\Tables\ROL.sql" />
+    <Build Include="dbo\Tables\BARRIO.sql" />
+    <Build Include="dbo\Tables\CANTON.sql" />
+    <Build Include="dbo\Tables\CARACTERISTICA.sql" />
+    <Build Include="dbo\Tables\CLIENTE.sql" />
+    <Build Include="dbo\Tables\CLIENTE_PROPIEDAD.sql" />
+    <Build Include="dbo\Tables\IMAGEN.sql" />
+    <Build Include="dbo\Tables\PARROQUIA.sql" />
+    <Build Include="dbo\Tables\PROPIEDAD.sql" />
+    <Build Include="dbo\Tables\PROPIETARIO.sql" />
+    <Build Include="dbo\Tables\PROVINCIA.sql" />
+    <Build Include="dbo\Tables\TIPO_PROPIEDAD.sql" />
+    <Build Include="dbo\Tables\TRANSACCION.sql" />
+    <Build Include="dbo\Tables\TRANSACCIONROL.sql" />
+    <Build Include="dbo\StoreProcedures\ConsultarTransaccionesUsuario.sql" />
+    <Build Include="dbo\StoreProcedures\ConsultarUsuario.sql" />
+    <Build Include="dbo\StoreProcedures\ValidarPasswordUsuario.sql" />
+    <Build Include="dbo\StoreProcedures\ActualizarRolSeguridad.sql" />
+    <Build Include="dbo\StoreProcedures\ActualizarTransaccion.sql" />
+    <Build Include="dbo\StoreProcedures\ConsultarTransacciones.sql" />
+    <Build Include="dbo\StoreProcedures\ConsultarTransaccionesRolSeguridad.sql" />
+    <Build Include="dbo\StoreProcedures\EliminarRolSeguridad.sql" />
+    <Build Include="dbo\StoreProcedures\EliminarTransaccion.sql" />
+    <Build Include="dbo\StoreProcedures\EliminarTransaccionRolSeguridad.sql" />
+    <Build Include="dbo\StoreProcedures\GuardarRol.sql" />
+    <Build Include="dbo\StoreProcedures\GuardarTransaccionRolSeguridad.sql" />
+    <Build Include="dbo\StoreProcedures\ConsultarRoles.sql" />
+    <Build Include="dbo\StoreProcedures\ConsultarUsuarios.sql" />
+    <Build Include="dbo\StoreProcedures\ActualizarUsuario.sql" />
+    <Build Include="dbo\StoreProcedures\EliminarUsuario.sql" />
+    <Build Include="dbo\StoreProcedures\GuardarUsuario.sql" />
+    <Build Include="dbo\StoreProcedures\ConsultarClientes.sql" />
+    <Build Include="dbo\StoreProcedures\ActualizarCliente.sql" />
+    <Build Include="dbo\StoreProcedures\EliminarCliente.sql" />
+    <Build Include="dbo\StoreProcedures\GuardarCliente.sql" />
+    <Build Include="dbo\Tables\DIRECCION.sql" />
+    <Build Include="dbo\StoreProcedures\ConsultarSubMenuUsuario.sql" />
+    <Build Include="dbo\StoreProcedures\ConsultarProvincias.sql" />
+    <Build Include="dbo\StoreProcedures\ActualizarProvincia.sql" />
+    <Build Include="dbo\StoreProcedures\GuardarProvincia.sql" />
+    <Build Include="dbo\StoreProcedures\EliminarProvincia.sql" />
+    <Build Include="dbo\StoreProcedures\ConsultarCantones.sql" />
+    <Build Include="dbo\StoreProcedures\ActualizarCanton.sql" />
+    <Build Include="dbo\StoreProcedures\GuardarCanton.sql" />
+    <Build Include="dbo\StoreProcedures\EliminarCanton.sql" />
+    <Build Include="dbo\StoreProcedures\ConsultarParroquias.sql" />
+    <Build Include="dbo\StoreProcedures\ActualizarParroquia.sql" />
+    <Build Include="dbo\StoreProcedures\GuardarParroquia.sql" />
+    <Build Include="dbo\StoreProcedures\EliminarParroquia.sql" />
+    <Build Include="dbo\StoreProcedures\ConsultarBarrios.sql" />
+    <Build Include="dbo\StoreProcedures\ActualizarBarrio.sql" />
+    <Build Include="dbo\StoreProcedures\GuardarBarrio.sql" />
+    <Build Include="dbo\StoreProcedures\EliminarBarrio.sql" />
+    <Build Include="dbo\StoreProcedures\ConsultarTiposPropiedad.sql" />
+    <Build Include="dbo\StoreProcedures\ActualizarTipoPropiedad.sql" />
+    <Build Include="dbo\StoreProcedures\GuardarTipoPropiedad.sql" />
+    <Build Include="dbo\StoreProcedures\EliminarTipoPropiedad.sql" />
+    <Build Include="dbo\StoreProcedures\ConsultarPropiedades.sql" />
+    <Build Include="dbo\StoreProcedures\GuardarPropiedad.sql" />
+    <Build Include="dbo\StoreProcedures\ActualizarPropiedad.sql" />
+    <Build Include="dbo\StoreProcedures\EliminarPropiedad.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Scripts\Script.PostDeployment1.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="InmobiliariaRBDB.refactorlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="InmobiliariaRBDB.publish.xml" />
+  </ItemGroup>
+</Project>

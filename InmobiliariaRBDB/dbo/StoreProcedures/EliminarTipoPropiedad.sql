@@ -1,0 +1,9 @@
+﻿CREATE PROCEDURE [dbo].[EliminarTipoPropiedad]
+	@i_id_tipo INT
+AS
+
+UPDATE  dbo.TIPO_PROPIEDAD
+SET     ESTADOTIPOPROPIEDAD = 0
+WHERE   IDTIPOPROPIEDAD		= @i_id_tipo
+
+RETURN 0

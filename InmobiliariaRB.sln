@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InmobiliariaRB.Logica", "In
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InmobiliariaRB.Model.Shared", "InmobiliariaRB.Model.Shared\InmobiliariaRB.Model.Shared.csproj", "{875EA840-F2D3-427A-BC92-5302B464D63D}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "InmobiliariaRBDB", "..\WebApplication1\InmobiliariaRBDB\InmobiliariaRBDB.sqlproj", "{78898372-E1CB-439B-A4BB-DF6DED981665}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "InmobiliariaRBDB", "InmobiliariaRBDB\InmobiliariaRBDB.sqlproj", "{78898372-E1CB-439B-A4BB-DF6DED981665}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
