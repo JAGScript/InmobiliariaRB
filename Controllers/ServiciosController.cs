@@ -12,15 +12,33 @@ namespace InmobiliariaRB.Controllers
     public class ServiciosController : ApiController
     {
         [HttpGet]
-        public IEnumerable<Usuario> ObtenerUsuarios()
+        [ActionName("ConsultarUsuario")]
+        public IEnumerable<Usuario> ConsultarUsuario(string id)
         {
-            string email = "administrador@pruebas.com";
+            string email = id;
             SeguridadCore objSeguridad = new SeguridadCore();
 
             var usuario = objSeguridad.ConsultarUsuario(email);
 
             var respuesta = new List<Usuario>();
             respuesta.Add(usuario);
+
+            var record = respuesta.ToArray();
+
+            return record;
+        }
+
+        [HttpGet]
+        [ActionName("ObtenerPropiedades")]
+        public IEnumerable<Propiedad> ObtenerPropiedades()
+        {
+            AdministracionCore objAdministracion = new AdministracionCore();
+
+            var propiedades = objAdministracion.ConsultarPropiedades();
+
+            var respuesta = new List<Propiedad>();
+
+            respuesta.AddRange(propiedades);
 
             var record = respuesta.ToArray();
 
