@@ -190,6 +190,7 @@ namespace InmobiliariaRB.Controllers
             ViewBag.Title = "Gestión de Propiedades";
 
             CatalogoCore objCatalogo = new CatalogoCore();
+            AdministracionCore objAdministracion = new AdministracionCore();
 
             PropiedadesView vista = new PropiedadesView();
 
@@ -197,6 +198,7 @@ namespace InmobiliariaRB.Controllers
             {
                 vista.TiposPropiedades = objCatalogo.ConsultarTiposPropiedad();
                 vista.Provincias = objCatalogo.ConsultarProvincias();
+                vista.Propietarios = objAdministracion.ConsultarPropietarios();
             }
             catch (Exception ex)
             {
@@ -240,26 +242,36 @@ namespace InmobiliariaRB.Controllers
 
             try
             {
-                if (ModelState.IsValid)
+                Propiedad propiedad = new Propiedad()
                 {
-                    Propiedad propiedad = new Propiedad()
-                    {
-                        IDTIPOPROPIEDAD = vista.IdTipoPropiedad,
-                        IDPROVINCIA = vista.IdProvincia,
-                        PRECIO = vista.Precio,
-                        IDUSUARIO = usuario.IDUSUARIO,
-                        ESTADOPROPIEDAD = true
-                    };
+                    IDPROPIETARIO = vista.IdPropietario,
+                    IDTIPOPROPIEDAD = vista.IdTipoPropiedad,
+                    IDPROVINCIA = vista.IdProvincia,
+                    PRECIO = vista.Precio,
+                    IDUSUARIO = usuario.IDUSUARIO,
+                    ESTADOPROPIEDAD = true
+                };
 
-                    objAdministracion.GuardarPropiedad(propiedad);
+                Caracteristica caracteristica = new Caracteristica()
+                {
+                    METROSCUADRADOS = vista.Caracteristica.METROSCUADRADOS,
+                    PLANTAS = vista.Caracteristica.PLANTAS,
+                    BANIOS = vista.Caracteristica.BANIOS,
+                    HABITACIONES = vista.Caracteristica.HABITACIONES,
+                    PARQUEADEROS = vista.Caracteristica.PARQUEADEROS,
+                    SERVICIOS = vista.Caracteristica.SERVICIOS,
+                    OTROS = vista.Caracteristica.OTROS
+                };
 
-                    vista = new PropiedadesView();
+                objAdministracion.GuardarPropiedad(caracteristica, propiedad);
 
-                    vista.TiposPropiedades = objCatalogo.ConsultarTiposPropiedad();
-                    vista.Provincias = objCatalogo.ConsultarProvincias();
+                vista = new PropiedadesView();
 
-                    ModelState.Clear();
-                }
+                vista.TiposPropiedades = objCatalogo.ConsultarTiposPropiedad();
+                vista.Provincias = objCatalogo.ConsultarProvincias();
+                vista.Propietarios = objAdministracion.ConsultarPropietarios();
+
+                ModelState.Clear();
 
                 ViewBag.Message = "Propiedad Guardada Correctamente";
             }
@@ -300,6 +312,7 @@ namespace InmobiliariaRB.Controllers
 
                     vista.TiposPropiedades = objCatalogo.ConsultarTiposPropiedad();
                     vista.Provincias = objCatalogo.ConsultarProvincias();
+                    vista.Propietarios = objAdministracion.ConsultarPropietarios();
 
                     ModelState.Clear();
                 }
@@ -336,6 +349,7 @@ namespace InmobiliariaRB.Controllers
 
                     vista.TiposPropiedades = objCatalogo.ConsultarTiposPropiedad();
                     vista.Provincias = objCatalogo.ConsultarProvincias();
+                    vista.Propietarios = objAdministracion.ConsultarPropietarios();
 
                     ModelState.Clear();
                 }
@@ -348,6 +362,146 @@ namespace InmobiliariaRB.Controllers
             }
 
             return View("_Propiedades", vista);
+        }
+        #endregion
+
+        #region Propietarios
+        [AuthorizeUser(idOperacion: 21)]
+        public ActionResult Propietarios()
+        {
+            ViewBag.Title = "Gestión de Propietarios";
+
+            PropietariosView vista = new PropietariosView();
+
+            return View("_Propietarios", vista);
+        }
+
+        public JsonResult CargarGridPropietarios([DataSourceRequest] DataSourceRequest request)
+        {
+            AdministracionCore objAdministracion = new AdministracionCore();
+
+            try
+            {
+                var propietarios = objAdministracion.ConsultarPropietarios(true);
+
+                if (propietarios == null)
+                    propietarios = new List<Propietario>();
+                else
+                {
+                    propietarios = propietarios.OrderBy(e => e.IDPROPIETARIO).ToList();
+                }
+
+                return Json(propietarios.ToDataSourceResult(request));
+            }
+            catch (Exception ex)
+            {
+                return RetornarErrorJsonResult(ex.Message);
+            }
+        }
+
+        public ActionResult GuardarPropietario(PropietariosView vista)
+        {
+            ViewBag.Title = "Gestión de Propietarios";
+
+            AdministracionCore objAdministracion = new AdministracionCore();
+
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    Propietario propietario = new Propietario()
+                    {
+                        NOMBREPROPIETARIO = vista.NombrePropietario,
+                        DIRECCIONPROPIETARIO = vista.DireccionPropietario,
+                        CELULARPROPIETARIO = vista.CelularPropietario,
+                        CORRREOPROPIETARIO = vista.CorreoPropietario,
+                        ESTADOPROPIETARIO = true
+                    };
+
+                    objAdministracion.GuardarPropietario(propietario);
+
+                    vista = new PropietariosView();
+
+                    ModelState.Clear();
+                }
+
+                ViewBag.Message = "Propietario Guardado Correctamente";
+            }
+            catch (Exception ex)
+            {
+                ViewBag.MessageError = ex.Message;
+            }
+
+            return View("_Propietarios", vista);
+        }
+
+        public ActionResult ActualizarPropietario(PropietariosView vista)
+        {
+            ViewBag.Title = "Gestión de Propietarios";
+
+            AdministracionCore objAdministracion = new AdministracionCore();
+
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    Propietario propietario = new Propietario()
+                    {
+                        IDPROPIETARIO = vista.IdPropietario,
+                        NOMBREPROPIETARIO = vista.NombrePropietario,
+                        DIRECCIONPROPIETARIO = vista.DireccionPropietario,
+                        CELULARPROPIETARIO = vista.CelularPropietario,
+                        CORRREOPROPIETARIO = vista.CorreoPropietario,
+                        ESTADOPROPIETARIO = vista.EstadoPropietarioOriginal ? true : vista.EstadoPropietario == 1
+                    };
+
+                    objAdministracion.ActualizarPropietario(propietario);
+
+                    vista = new PropietariosView();
+
+                    ModelState.Clear();
+                }
+
+                ViewBag.Message = "Propietario Actualizado Correctamente";
+            }
+            catch (Exception ex)
+            {
+                ViewBag.MessageError = ex.Message;
+            }
+
+            return View("_Propietarios", vista);
+        }
+
+        public ActionResult EliminarPropietario(PropietariosView vista)
+        {
+            ViewBag.Title = "Gestión de Propietarios";
+
+            AdministracionCore objAdministracion = new AdministracionCore();
+
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    Propietario propietario = new Propietario()
+                    {
+                        IDPROPIETARIO = vista.IdPropietario
+                    };
+
+                    objAdministracion.EliminarPropietario(propietario);
+
+                    vista = new PropietariosView();
+
+                    ModelState.Clear();
+                }
+
+                ViewBag.Message = "Propietario Eliminado Correctamente";
+            }
+            catch (Exception ex)
+            {
+                ViewBag.MessageError = ex.Message;
+            }
+
+            return View("_Propietarios", vista);
         }
         #endregion
 

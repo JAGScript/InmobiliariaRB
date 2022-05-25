@@ -22,6 +22,8 @@ namespace InmobiliariaRB.Models.Administracion
 
         public int IdPropietario { get; set; }
 
+        public List<Propietario> Propietarios { get; set; }
+
         public int IdUsuario { get; set; }
 
         public decimal Precio { get; set; }
@@ -34,10 +36,13 @@ namespace InmobiliariaRB.Models.Administracion
 
         public bool EstadoPropiedadOriginal { get; set; }
 
+        public Caracteristica Caracteristica { get; set; }
+
         public PropiedadesView()
         {
             TiposPropiedades = new List<TipoPropiedad>();
             Provincias = new List<Provincia>();
+            Propietarios = new List<Propietario>();
         }
     }
 }

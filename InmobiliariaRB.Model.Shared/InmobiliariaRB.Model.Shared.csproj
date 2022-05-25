@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Barrio.cs" />
     <Compile Include="Canton.cs" />
+    <Compile Include="Caracteristica.cs" />
     <Compile Include="Cliente.cs" />
     <Compile Include="Parroquia.cs" />
     <Compile Include="Propiedad.cs" />

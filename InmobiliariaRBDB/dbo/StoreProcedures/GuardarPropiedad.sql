@@ -1,4 +1,6 @@
 ﻿CREATE PROCEDURE [dbo].[GuardarPropiedad]
+	@i_id_propietario       int,
+	@i_id_caracteristica    int,
 	@i_id_tipo_propiedad    int,
     @i_id_provincia         int,
     @i_precio               money = null,
@@ -18,10 +20,10 @@ INSERT INTO dbo.PROPIEDAD
 )
 VALUES
 (
-    0,
+    @i_id_caracteristica,
     @i_id_provincia,
     @i_id_tipo_propiedad,
-    0,
+    @i_id_propietario,
     @i_id_usuario,
     @i_precio,
     GETDATE(),

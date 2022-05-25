@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[CARACTERISTICA]
 (
-	[IDCARACTERISTICA]  INT             NOT NULL , 
+	[IDCARACTERISTICA]  INT IDENTITY(1, 1) NOT NULL , 
     [METROSCUADRADOS]   DECIMAL         NULL, 
     [PLANTAS]           INT             NULL, 
     [BANIOS]            INT             NULL, 

@@ -196,6 +196,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Administracion\ClientesView.cs" />
     <Compile Include="Models\Administracion\PropiedadesView.cs" />
+    <Compile Include="Models\Administracion\PropietariosView.cs" />
     <Compile Include="Models\Catalogo\BarriosView.cs" />
     <Compile Include="Models\Catalogo\CantonesView.cs" />
     <Compile Include="Models\Catalogo\CatalogosView.cs" />
@@ -2805,6 +2806,7 @@
     <Content Include="Views\Catalogo\_Barrios.cshtml" />
     <Content Include="Views\Catalogo\_TiposPropiedad.cshtml" />
     <Content Include="Views\Administracion\_Propiedades.cshtml" />
+    <Content Include="Views\Administracion\_Propietarios.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

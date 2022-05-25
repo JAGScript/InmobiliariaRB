@@ -124,6 +124,11 @@
     <Build Include="dbo\StoreProcedures\GuardarPropiedad.sql" />
     <Build Include="dbo\StoreProcedures\ActualizarPropiedad.sql" />
     <Build Include="dbo\StoreProcedures\EliminarPropiedad.sql" />
+    <Build Include="dbo\StoreProcedures\ConsultarPropietarios.sql" />
+    <Build Include="dbo\StoreProcedures\GuardarPropietario.sql" />
+    <Build Include="dbo\StoreProcedures\ActualizarPropietario.sql" />
+    <Build Include="dbo\StoreProcedures\EliminarPropietario.sql" />
+    <Build Include="dbo\StoreProcedures\GuardarCaracteristica.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\Script.PostDeployment1.sql" />

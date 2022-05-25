@@ -27,7 +27,7 @@
                     });
 
                     $('#limpiar').click(function () {
-                        $('form').attr('Action', '/Administracion/Propiedad');
+                        $('form').attr('Action', '/Administracion/Propiedades');
                     });
                 })
 
@@ -46,10 +46,25 @@
 
                     $('#EstadoPropiedad').data('kendoComboBox').enable(false);
 
+                    debugger;
+
                     $('#IdPropiedad').val(selectedRow.IDPROPIEDAD);
+                    $('#IdPropietario').data('kendoComboBox').value(selectedRow.IDPROPIETARIO);
+                    $('#IdProvincia').data('kendoComboBox').value(selectedRow.IDPROVINCIA);
+                    $('#IdTipoPropiedad').data('kendoComboBox').value(selectedRow.IDTIPOPROPIEDAD);
                     $('#Precio').val(selectedRow.PRECIO);
                     $('#EstadoPropiedad').data('kendoComboBox').value(selectedRow.ESTADOPROPIEDAD ? "1" : "0");
                     $('#EstadoPropiedadOriginal').val(selectedRow.ESTADOPROPIEDAD);
+
+                    //Caracteristicas
+                    $('#Caracteristica_IDCARACTERISTICA').val(selectedRow.IDCARACTERISTICA);
+                    $('#Caracteristica_METROSCUADRADOS').val(selectedRow.METROSCUADRADOS);
+                    $('#Caracteristica_PLANTAS').val(selectedRow.PLANTAS);
+                    $('#Caracteristica_BANIOS').val(selectedRow.BANIOS);
+                    $('#Caracteristica_HABITACIONES').val(selectedRow.HABITACIONES);
+                    $('#Caracteristica_PARQUEADEROS').val(selectedRow.PARQUEADEROS);
+                    $('#Caracteristica_SERVICIOS').val(selectedRow.SERVICIOS);
+                    $('#Caracteristica_OTROS').val(selectedRow.OTROS);
 
                     if (!selectedRow.ESTADOPROPIEDAD) {
                         $('#EstadoPropiedad').data('kendoComboBox').enable(true);
@@ -67,9 +82,21 @@
                     $('#EstadoPropiedad').data('kendoComboBox').enable(false);
 
                     $('#IdPropiedad').val(0);
+                    $('#IdPropietario').data('kendoComboBox').value("0");
+                    $('#IdProvincia').data('kendoComboBox').value("0");
+                    $('#IdTipoPropiedad').data('kendoComboBox').value("0");
                     $('#Precio').val('');
-                    $('#EstadoCliente').data('kendoComboBox').value("0");
-                    $('#EstadoOriginalCliente').val('');
+                    $('#EstadoPropiedad').data('kendoComboBox').value("0");
+                    $('#EstadoPropiedadOriginal').val('');
+
+                    $('#Caracteristica_IDCARACTERISTICA').val(0);
+                    $('#Caracteristica_METROSCUADRADOS').val('');
+                    $('#Caracteristica_PLANTAS').val('');
+                    $('#Caracteristica_BANIOS').val('');
+                    $('#Caracteristica_HABITACIONES').val('');
+                    $('#Caracteristica_PARQUEADEROS').val('');
+                    $('#Caracteristica_SERVICIOS').val('');
+                    $('#Caracteristica_OTROS').val('');
                 }
             </script>
             @using (Html.BeginForm())
@@ -103,10 +130,18 @@
                     </tr>
                     <tr>
                         <td>
+                            Propietario:
+                        </td>
+                        <td>
+                            @Html.Kendo().ComboBoxFor(model => model.IdPropietario).BindTo(new SelectList(Model.Propietarios, "IDPROPIETARIO", "NOMBREPROPIETARIO"))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
                             Tipo Propiedad:
                         </td>
                         <td>
-                            @Html.Kendo().DropDownListFor(m => m.IdTipoPropiedad).BindTo(new SelectList(Model.TiposPropiedades, "IDTIPOPROPIEDAD", "NOMBRETIPOPROPIEDAD")).OptionLabel("Seleccionar")
+                            @Html.Kendo().ComboBoxFor(model => model.IdTipoPropiedad).BindTo(new SelectList(Model.TiposPropiedades, "IDTIPOPROPIEDAD", "NOMBRETIPOPROPIEDAD"))
                         </td>
                     </tr>
                     <tr>
@@ -114,7 +149,7 @@
                             Provincia:
                         </td>
                         <td>
-                            @Html.Kendo().DropDownListFor(m => m.IdProvincia).BindTo(new SelectList(Model.Provincias, "IDPROVINCIA", "NOMBREPROVINCIA")).OptionLabel("Seleccionar")
+                            @Html.Kendo().ComboBoxFor(model => model.IdProvincia).BindTo(new SelectList(Model.Provincias, "IDPROVINCIA", "NOMBREPROVINCIA"))
                         </td>
                     </tr>
                     <tr>
@@ -122,7 +157,7 @@
                             Precio:
                         </td>
                         <td>
-                            @Html.Kendo().NumericTextBoxFor(m => m.Precio)
+                            @Html.Kendo().TextBoxFor(m => m.Precio)
                         </td>
                     </tr>
                     <tr>
@@ -131,6 +166,49 @@
                         </td>
                         <td>
                             @Html.Kendo().ComboBoxFor(model => model.EstadoPropiedad).BindTo(new SelectList(estados, "Value", "Text")).Enable(false)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            Carácteristicas
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Metros Cuadrados:
+                            @Html.TextBoxFor(m => m.Caracteristica.METROSCUADRADOS, new { @class = "form-control" })
+                        </td>
+                        <td>
+                            Plantas:
+                            @Html.TextBoxFor(m => m.Caracteristica.PLANTAS, new { @class = "form-control" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Baños:
+                            @Html.TextBoxFor(m => m.Caracteristica.BANIOS, new { @class = "form-control" })
+                        </td>
+                        <td>
+                            Habitaciones:
+                            @Html.TextBoxFor(m => m.Caracteristica.HABITACIONES, new { @class = "form-control" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Parqueaderos:
+                            @Html.TextBoxFor(m => m.Caracteristica.PARQUEADEROS, new { @class = "form-control" })
+                        </td>
+                        <td>
+                            Servicios:
+                            @Html.TextAreaFor(m => m.Caracteristica.SERVICIOS, new { @class = "form-control" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Otros:
+                        </td>
+                        <td>
+                            @Html.TextAreaFor(m => m.Caracteristica.OTROS, new { @class = "form-control" })
                         </td>
                     </tr>
                 </table>
@@ -147,6 +225,7 @@
                     </tr>
                 </table>
                 @Html.HiddenFor(m => m.IdPropiedad)
+                @Html.HiddenFor(m => m.Caracteristica.IDCARACTERISTICA)
                 @Html.HiddenFor(m => m.EstadoPropiedadOriginal)
             }
         </section>
