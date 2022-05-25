@@ -1,0 +1,218 @@
+﻿@model InmobiliariaRB.Models.Catalogo.ParroquiasView
+@{
+    IEnumerable<SelectListItem> estadosParroquia = new List<SelectListItem>
+{
+        new SelectListItem{ Value = "1", Text = "Activo" },
+        new SelectListItem{ Value = "0", Text = "Inactivo" }
+    };
+}
+<h2>@ViewBag.Title.</h2>
+<h4 id="mensajeError" class="text-danger" style="display:@(string.IsNullOrEmpty(ViewBag.MessageError) ? "none" : string.Empty)">@ViewBag.MessageError.</h4>
+<h4 id="mensajeExito" class="text-info" style="display:@(string.IsNullOrEmpty(ViewBag.Message) ? "none" : string.Empty)">@ViewBag.Message.</h4>
+<div class="row">
+    <div class="col-md-11">
+        <section id="permisosForm">
+            <script type="text/javascript">
+                function onRowSelectedParroquia() {
+                    var selectedRow;
+                    var grid = this;
+
+                    grid.select().each(function () {
+                        selectedRow = grid.dataItem($(this));
+                    });
+
+                    $('#cancelar').show();
+                    document.getElementById('guardar').disabled = 'disabled';
+                    document.getElementById('eliminar').disabled = 'disabled';
+                    document.getElementById('actualizar').disabled = '';
+
+                    $('#EstadoParroquia').data('kendoComboBox').enable(false);
+
+                    $('#IdParroquia').val(selectedRow.IDPARROQUIA);
+                    $('#CodParroquia').val(selectedRow.CODPARROQUIA);
+                    $('#NombreParroquia').val(selectedRow.NOMBREPARROQUIA);
+                    $('#EstadoParroquia').data('kendoComboBox').value(selectedRow.ESTADOPARROQUIA ? "1" : "0");
+                    $('#EstadoParroquiaOriginal').val(selectedRow.ESTADOPARROQUIA);
+
+                    if (!selectedRow.ESTADOPARROQUIA) {
+                        $('#EstadoParroquia').data('kendoComboBox').enable(true);
+                    } else {
+                        document.getElementById('eliminar').disabled = '';
+                    }
+                }
+
+                function cancelarEdicionParroquia() {
+                    $('#cancelar').hide();
+                    document.getElementById('guardar').disabled = '';
+                    document.getElementById('actualizar').disabled = 'disabled';
+                    document.getElementById('eliminar').disabled = 'disabled';
+
+                    $('#EstadoParroquia').data('kendoComboBox').enable(false);
+
+                    $('#IdParroquia').val(0);
+                    $('#CodParroquia').val('');
+                    $('#NombreParroquia').val('');
+                    $('#EstadoParroquia').data('kendoComboBox').value("0");
+                    $('#EstadoParroquiaOriginal').val('');
+                }
+
+                function actualizarParroquia() {
+                    var idParroquiaParam = $('#IdParroquia').val();
+                    var idCantonParam = $('#IdCanton').val();
+                    var codParroquiaParam = $('#CodParroquia').val();
+                    var nombreParroquiaParam = $('#NombreParroquia').val();
+                    var estadoParroquiaParam = $('#EstadoParroquia').data('kendoComboBox').value();
+
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("ActualizarParroquia", "Catalogo")',
+                        data: { idParroquia: idParroquiaParam, idCanton: idCantonParam, codParroquia: codParroquiaParam, nombre: nombreParroquiaParam, estado: estadoParroquiaParam },
+                        success: function (result) {
+                            if (result == "") {
+                                cancelarEdicionParroquia();
+                                cargarGrid();
+                            }
+                        },
+                        error: function (err) {
+                            alert('Error al actualizar Parroquia: ' + err.responseJSON);
+                        }
+                    });
+                }
+
+                function guardarParroquia() {
+                    var idCantonParam = $('#IdCanton').val();
+                    var codParroquiaParam = $('#CodParroquia').val();
+                    var nombreParroquiaParam = $('#NombreParroquia').val();
+
+                    if (codParroquiaParam == "" || nombreParroquiaParam == "") {
+                        alert("Existen campos vacios, llenalos para continuar.")
+                    } else {
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("GuardarParroquia", "Catalogo")',
+                            data: { idCanton: idCantonParam, codParroquia: codParroquiaParam, nombre: nombreParroquiaParam },
+                            success: function (result) {
+                                if (result == "") {
+                                    cancelarEdicionParroquia();
+                                    cargarGrid();
+                                }
+                            },
+                            error: function (err) {
+                                alert('Error al guardar Parroquia: ' + err.responseJSON);
+                            }
+                        });
+                    }
+                }
+
+                function eliminarParroquia() {
+                    var idParroquiaParam = $('#IdParroquia').val();
+
+                    if (idParroquiaParam == "") {
+                        alert("No ha seleccionado ningun registro para eliminar.")
+                    } else {
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("EliminarParroquia", "Catalogo")',
+                            data: { idParroquia: idParroquiaParam },
+                            success: function (result) {
+                                if (result == "") {
+                                    cancelarEdicionParroquia();
+                                    cargarGrid();
+                                }
+                            },
+                            error: function (err) {
+                                alert('Error al eliminar Parroquia: ' + err.responseJSON);
+                            }
+                        });
+                    }
+                }
+
+                function cargarGrid() {
+                    var idCantonParam = $('#IdCanton').val();
+
+                    cancelarEdicionParroquia();
+
+                    $('#GridParroquias').data('kendoGrid').dataSource.read({ idCanton: idCantonParam });
+                }
+            </script>
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <table style="width: 80%">
+                    <tr>
+                        <td>
+                            Cantón:
+                        </td>
+                        <td>
+                            @Html.Kendo().DropDownListFor(m => m.IdCanton).BindTo(new SelectList(Model.Cantones, "IDCANTON", "NOMBRECANTON")).OptionLabel("Seleccionar").Events(events => events.Change("cargarGrid"))
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            @(
+                                Html.Kendo()
+                                .Grid<InmobiliariaRB.Model.Shared.Parroquia>()
+                                .Name("GridParroquias")
+                                .Columns(c =>
+                                {
+                                    c.Bound(col => col.IDPARROQUIA).Hidden();
+                                    c.Bound(col => col.CODPARROQUIA).Title("Código");
+                                    c.Bound(col => col.NOMBREPARROQUIA).Title("Nombre");
+                                    c.Bound(col => col.NOMBRECANTON).Title("Canton");
+                                    c.Bound(col => col.ESTADOPARROQUIA).Title("Estado").ClientTemplate("#: ESTADOPARROQUIA ? 'Activo' : 'Inactivo' #");
+                                })
+                                .Selectable()
+                                .DataSource(dataBinding => dataBinding.Ajax()
+                                    .Read("CargarGridParroquias", "Catalogo", new { idCanton = Model.IdCanton}))
+                                .Events(events => events.Change("onRowSelectedParroquia"))
+                                .Scrollable()
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width:20%">
+                            Código:
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.CodParroquia, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.CodParroquia, "", new { @class = "text-danger" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Nombre:
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.NombreParroquia, new { style = "width:100%; height:80%", @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.NombreParroquia, "", new { @class = "text-danger" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Estado:
+                        </td>
+                        <td>
+                            @Html.Kendo().ComboBoxFor(model => model.EstadoParroquia).BindTo(new SelectList(estadosParroquia, "Value", "Text")).Enable(false)
+                        </td>
+                    </tr>
+                </table>
+                <hr />
+                <table>
+                    <tr>
+                        <td>
+                            <input type="button" id="guardar" value="Guardar" class="btn btn-default" onclick="guardarParroquia()" />
+                            <input type="button" id="actualizar" value="Actualizar" class="btn btn-default" disabled onclick="actualizarParroquia()" />
+                            <input type="button" id="eliminar" value="Eliminar" class="btn btn-default" disabled onclick="eliminarParroquia()" />
+                            <input type="button" id="cancelar" value="Cancelar" class="btn btn-default" onclick="cancelarEdicionParroquia()" style="display:none" />
+                            <input type="button" id="limpiar" value="Limpiar" class="btn btn-default" onclick="cancelarEdicionParroquia()" />
+                        </td>
+                    </tr>
+                </table>
+                @Html.HiddenFor(m => m.IdParroquia)
+                @Html.HiddenFor(m => m.EstadoParroquiaOriginal)
+            }
+        </section>
+    </div>
+</div>

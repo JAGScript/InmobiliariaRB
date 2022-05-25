@@ -1,0 +1,154 @@
+﻿@model InmobiliariaRB.Models.Administracion.PropiedadesView
+@{
+    IEnumerable<SelectListItem> estados = new List<SelectListItem>
+{
+        new SelectListItem{ Value = "1", Text = "Activo" },
+        new SelectListItem{ Value = "0", Text = "Inactivo" }
+    };
+}
+<h2>@ViewBag.Title.</h2>
+<h4 id="mensajeError" class="text-danger" style="display:@(string.IsNullOrEmpty(ViewBag.MessageError) ? "none" : string.Empty)">@ViewBag.MessageError.</h4>
+<h4 id="mensajeExito" class="text-info" style="display:@(string.IsNullOrEmpty(ViewBag.Message) ? "none" : string.Empty)">@ViewBag.Message.</h4>
+<div class="row">
+    <div class="col-md-11">
+        <section id="permisosForm">
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    $('#guardar').click(function () {
+                        $('form').attr('Action', '/Administracion/GuardarPropiedad');
+                    });
+
+                    $('#actualizar').click(function () {
+                        $('form').attr('Action', '/Administracion/ActualizarPropiedad');
+                    });
+
+                    $('#eliminar').click(function () {
+                        $('form').attr('Action', '/Administracion/EliminarPropiedad');
+                    });
+
+                    $('#limpiar').click(function () {
+                        $('form').attr('Action', '/Administracion/Propiedad');
+                    });
+                })
+
+                function onRowSelectedPropiedad() {
+                    var selectedRow;
+                    var grid = this;
+
+                    grid.select().each(function () {
+                        selectedRow = grid.dataItem($(this));
+                    });
+
+                    $('#cancelar').show();
+                    document.getElementById('guardar').disabled = 'disabled';
+                    document.getElementById('eliminar').disabled = 'disabled';
+                    document.getElementById('actualizar').disabled = '';
+
+                    $('#EstadoPropiedad').data('kendoComboBox').enable(false);
+
+                    $('#IdPropiedad').val(selectedRow.IDPROPIEDAD);
+                    $('#Precio').val(selectedRow.PRECIO);
+                    $('#EstadoPropiedad').data('kendoComboBox').value(selectedRow.ESTADOPROPIEDAD ? "1" : "0");
+                    $('#EstadoPropiedadOriginal').val(selectedRow.ESTADOPROPIEDAD);
+
+                    if (!selectedRow.ESTADOPROPIEDAD) {
+                        $('#EstadoPropiedad').data('kendoComboBox').enable(true);
+                    } else {
+                        document.getElementById('eliminar').disabled = '';
+                    }
+                }
+
+                function cancelarEdicionPropiedad() {
+                    $('#cancelar').hide();
+                    document.getElementById('guardar').disabled = '';
+                    document.getElementById('actualizar').disabled = 'disabled';
+                    document.getElementById('eliminar').disabled = 'disabled';
+
+                    $('#EstadoPropiedad').data('kendoComboBox').enable(false);
+
+                    $('#IdPropiedad').val(0);
+                    $('#Precio').val('');
+                    $('#EstadoCliente').data('kendoComboBox').value("0");
+                    $('#EstadoOriginalCliente').val('');
+                }
+            </script>
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <table style="width: 80%">
+                    <tr>
+                        <td colspan="3">
+                            @(
+                                Html.Kendo()
+                                .Grid<InmobiliariaRB.Model.Shared.Propiedad>()
+                                .Name("GridPropiedades")
+                                .Columns(c =>
+                                {
+                                    c.Bound(col => col.IDPROPIEDAD).Hidden();
+                                    c.Bound(col => col.NOMBRETIPOPROPIEDAD).Title("Tipo");
+                                    c.Bound(col => col.NOMBREPROVINCIA).Title("Provincia");
+                                    c.Bound(col => col.PRECIO).Title("Precio");
+                                    c.Bound(col => col.FECHAREGISTROPROPIEDAD).Title("Fecha Registro");
+                                    c.Bound(col => col.ESTADOPROPIEDAD).Title("Estado").ClientTemplate("#: ESTADOPROPIEDAD ? 'Activo' : 'Inactivo' #");
+                                })
+                                .Selectable()
+                                .DataSource(dataBinding => dataBinding.Ajax()
+                                    .Read("CargarGridPropiedades", "Administracion"))
+                                .Events(events => events.Change("onRowSelectedPropiedad"))
+                                .Scrollable()
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Tipo Propiedad:
+                        </td>
+                        <td>
+                            @Html.Kendo().DropDownListFor(m => m.IdTipoPropiedad).BindTo(new SelectList(Model.TiposPropiedades, "IDTIPOPROPIEDAD", "NOMBRETIPOPROPIEDAD")).OptionLabel("Seleccionar")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Provincia:
+                        </td>
+                        <td>
+                            @Html.Kendo().DropDownListFor(m => m.IdProvincia).BindTo(new SelectList(Model.Provincias, "IDPROVINCIA", "NOMBREPROVINCIA")).OptionLabel("Seleccionar")
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Precio:
+                        </td>
+                        <td>
+                            @Html.Kendo().NumericTextBoxFor(m => m.Precio)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Estado:
+                        </td>
+                        <td>
+                            @Html.Kendo().ComboBoxFor(model => model.EstadoPropiedad).BindTo(new SelectList(estados, "Value", "Text")).Enable(false)
+                        </td>
+                    </tr>
+                </table>
+                <hr />
+                <table>
+                    <tr>
+                        <td>
+                            <input type="submit" id="guardar" value="Guardar" class="btn btn-default" />
+                            <input type="submit" id="actualizar" value="Actualizar" class="btn btn-default" disabled />
+                            <input type="submit" id="eliminar" value="Eliminar" class="btn btn-default" disabled />
+                            <input type="button" id="cancelar" value="Cancelar" class="btn btn-default" onclick="cancelarEdicionPropiedad()" style="display:none" />
+                            <input type="submit" id="limpiar" value="Limpiar" class="btn btn-default" />
+                        </td>
+                    </tr>
+                </table>
+                @Html.HiddenFor(m => m.IdPropiedad)
+                @Html.HiddenFor(m => m.EstadoPropiedadOriginal)
+            }
+        </section>
+    </div>
+</div>

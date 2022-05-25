@@ -1,0 +1,33 @@
+﻿@*@model InmobiliariaRB.Models.MenuBar
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("RenderMenu", "Home")',
+            data: { },
+            success: function (result) {
+                if (result != "") {
+                    debugger;
+                    model.transacciones = result;
+                }
+            },
+            error: function (err) {
+                alert('Error al consultar transacciones: ' + err.responseJSON);
+            }
+        });
+    });
+</script>*@
+@*@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+}*@
+<div class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("Clientes", "IndexClientes", "Administracion")</li>
+            </ul>
+        </div>
+    </div>
+</div>

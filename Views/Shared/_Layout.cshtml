@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Inmobiliaria RB</title>
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/kendo/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/kendo")
+
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                @Html.ActionLink("Inmobiliaria RB", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @(Html.Kendo().Menu()
+                    .Name("menu")
+                    .DataTextField("Nombre")
+                    .DataUrlField("UrlTransaccion")
+                    .DataSource(dataSource => dataSource
+                        .Read(read => read
+                            .Action("GetTransacciones", "Home")
+                        )
+                    ))
+    </div>
+    <div id="windowLoading" style="display:none">
+        Cargando...<img src="@Url.Content("~/Content/images/wait.gif")" />
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <img src="@Url.Content("~/Content/images/logo.jpeg")" /><p>&copy; @DateTime.Now.Year - Inmobiliaria RB</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

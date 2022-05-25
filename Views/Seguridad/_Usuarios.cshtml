@@ -1,0 +1,178 @@
+﻿@using InmobiliariaRB.Models.Seguridad
+@model UsuariosView
+@{
+    IEnumerable<SelectListItem> estadosUsuario = new List<SelectListItem>
+{
+        new SelectListItem{ Value = "1", Text = "Activo" },
+        new SelectListItem{ Value = "0", Text = "Inactivo" }
+    };
+}
+<h2>@ViewBag.Title.</h2>
+<h4 id="mensajeError" class="text-danger" style="display:@(string.IsNullOrEmpty(ViewBag.MessageError) ? "none" : string.Empty)">@ViewBag.MessageError.</h4>
+<h4 id="mensajeExito" class="text-info" style="display:@(string.IsNullOrEmpty(ViewBag.Message) ? "none" : string.Empty)">@ViewBag.Message.</h4>
+<div class="row">
+    <div class="col-md-11">
+        <section id="permisosForm">
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    $('#guardar').click(function () {
+                        $('form').attr('Action', '/Seguridad/GuardarUsuario');
+                    });
+
+                    $('#actualizar').click(function () {
+                        $('form').attr('Action', '/Seguridad/ActualizarUsuario');
+                    });
+
+                    $('#eliminar').click(function () {
+                        $('form').attr('Action', '/Seguridad/EliminarUsuario');
+                    });
+
+                    $('#limpiar').click(function () {
+                        $('form').attr('Action', '/Seguridad/Usuarios');
+                    });
+                })
+
+                function onRowSelectedUsuario() {
+                    var selectedRow;
+                    var grid = this;
+
+                    grid.select().each(function () {
+                        selectedRow = grid.dataItem($(this));
+                    });
+
+                    $('#cancelar').show();
+                    document.getElementById('guardar').disabled = 'disabled';
+                    document.getElementById('eliminar').disabled = 'disabled';
+                    document.getElementById('actualizar').disabled = '';
+
+                    $('#Estado').data('kendoComboBox').enable(false);
+
+                    $('#IdUsuario').val(selectedRow.IDUSUARIO);
+                    $('#NombreUsuario').val(selectedRow.NOMBREUSUARIO);
+                    $('#IdentificacionUsuario').val(selectedRow.IDENTIFICACIONUSUARIO);
+                    $('#UserName').val(selectedRow.USERNAME);
+                    $('#IdRol').data('kendoComboBox').value(selectedRow.IDROL);
+                    $('#Estado').data('kendoComboBox').value(selectedRow.ESTADO ? "1" : "0");
+                    $('#EstadoOriginalUsuario').val(selectedRow.ESTADO);
+
+                    if (!selectedRow.Estado) {
+                        $('#Estado').data('kendoComboBox').enable(true);
+                    } else {
+                        document.getElementById('eliminar').disabled = '';
+                    }
+                }
+
+                function cancelarEdicionUsuario() {
+                    $('#cancelar').hide();
+                    document.getElementById('guardar').disabled = '';
+                    document.getElementById('actualizar').disabled = 'disabled';
+                    document.getElementById('eliminar').disabled = 'disabled';
+
+                    $('#Estado').data('kendoComboBox').enable(false);
+
+                    $('#IdUsuario').val(0);
+                    $('#NombreUsuario').val('');
+                    $('#IdentificacionUsuario').val('');
+                    $('#UserName').val('');
+                    $('#Estado').data('kendoComboBox').value("0");
+                    $('#IdRol').data('kendoComboBox').value("1");
+                    $('#EstadoOriginalUsuario').val('');
+                }
+            </script>
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <table style="width: 80%">
+                    <tr>
+                        <td colspan="3">
+                            @(
+                                Html.Kendo()
+                                .Grid<InmobiliariaRB.Model.Shared.Usuario>()
+                                .Name("GridUsuarios")
+                                .Columns(c =>
+                                {
+                                    c.Bound(col => col.IDUSUARIO).Hidden();
+                                    c.Bound(col => col.NOMBREUSUARIO).Title("Nombre");
+                                    c.Bound(col => col.IDENTIFICACIONUSUARIO).Title("Identificación");
+                                    c.Bound(col => col.USERNAME).Title("Login");
+                                    c.Bound(col => col.ESTADO).Title("Estado").ClientTemplate("#: ESTADO ? 'Activo' : 'Inactivo' #");
+                                })
+                                .Selectable()
+                                .DataSource(dataBinding => dataBinding.Ajax()
+                                    .Read("CargarGridUsuarios", "Seguridad"))
+                                .Events(events => events.Change("onRowSelectedUsuario"))
+                                .Scrollable()
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width:20%">
+                            Nombre:
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.NombreUsuario, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.NombreUsuario, "", new { @class = "text-danger" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Identificación:
+                        </td>
+                        <td>
+                            @Html.TextAreaFor(m => m.IdentificacionUsuario, new { style = "width:100%; height:80%", @class = "form-control" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Login:
+                        </td>
+                        <td>
+                            @Html.TextAreaFor(m => m.UserName, new { style = "width:100%; height:80%", @class = "form-control" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Contraseña:
+                        </td>
+                        <td>
+                            @Html.PasswordFor(m => m.Contrasena, new { style = "width:100%; height:80%", @class = "form-control" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Rol:
+                        </td>
+                        <td>
+                            @Html.Kendo().ComboBoxFor(m => m.IdRol).BindTo(new SelectList(Model.Roles, "IDROL", "NOMBREROL"))
+                            @Html.ValidationMessageFor(m => m.IdRol, "", new { @class = "text-danger" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Estado:
+                        </td>
+                        <td>
+                            @Html.Kendo().ComboBoxFor(model => model.Estado).BindTo(new SelectList(estadosUsuario, "Value", "Text")).Enable(false)
+                        </td>
+                    </tr>
+                </table>
+                <hr />
+                <table>
+                    <tr>
+                        <td>
+                            <input type="submit" id="guardar" value="Guardar" class="btn btn-default" />
+                            <input type="submit" id="actualizar" value="Actualizar" class="btn btn-default" disabled />
+                            <input type="submit" id="eliminar" value="Eliminar" class="btn btn-default" disabled />
+                            <input type="button" id="cancelar" value="Cancelar" class="btn btn-default" onclick="cancelarEdicionUsuario()" style="display:none" />
+                            <input type="submit" id="limpiar" value="Limpiar" class="btn btn-default" />
+                        </td>
+                    </tr>
+                </table>
+                @Html.HiddenFor(m => m.IdUsuario)
+                @Html.HiddenFor(m => m.EstadoOriginalUsuario)
+            }
+        </section>
+    </div>
+</div>

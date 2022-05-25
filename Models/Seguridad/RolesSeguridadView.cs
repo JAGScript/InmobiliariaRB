@@ -1,0 +1,25 @@
+﻿using InmobiliariaRB.Model.Shared;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
+namespace InmobiliariaRB.Models.Seguridad
+{
+    public class RolesSeguridadView
+    {
+        public int IdRolSeguridad { get; set; }
+
+        [Required]
+        public string NombreRol { get; set; }
+
+        public string DescripcionRol { get; set; }
+
+        [Required]
+        public int EstadoRol { get; set; }
+
+        public bool EstadoOriginalRol { get; set; }
+
+        public string IdTemp { get; set; }
+
+        public List<Transaccion> ListaTransacciones { get; set; }
+    }
+}

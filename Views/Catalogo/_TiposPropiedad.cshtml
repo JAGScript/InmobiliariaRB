@@ -1,0 +1,189 @@
+﻿@model InmobiliariaRB.Models.Catalogo.TiposPropiedadView
+@{
+    IEnumerable<SelectListItem> estadosTipos = new List<SelectListItem>
+{
+        new SelectListItem{ Value = "1", Text = "Activo" },
+        new SelectListItem{ Value = "0", Text = "Inactivo" }
+    };
+}
+<h2>@ViewBag.Title.</h2>
+<h4 id="mensajeError" class="text-danger" style="display:@(string.IsNullOrEmpty(ViewBag.MessageError) ? "none" : string.Empty)">@ViewBag.MessageError.</h4>
+<h4 id="mensajeExito" class="text-info" style="display:@(string.IsNullOrEmpty(ViewBag.Message) ? "none" : string.Empty)">@ViewBag.Message.</h4>
+<div class="row">
+    <div class="col-md-11">
+        <section id="permisosForm">
+            <script type="text/javascript">
+                function onRowSelectedTipo() {
+                    var selectedRow;
+                    var grid = this;
+
+                    grid.select().each(function () {
+                        selectedRow = grid.dataItem($(this));
+                    });
+
+                    $('#cancelar').show();
+                    document.getElementById('guardar').disabled = 'disabled';
+                    document.getElementById('eliminar').disabled = 'disabled';
+                    document.getElementById('actualizar').disabled = '';
+
+                    $('#EstadoTipoPropiedad').data('kendoComboBox').enable(false);
+
+                    $('#IdTipoPropiedad').val(selectedRow.IDTIPOPROPIEDAD);
+                    $('#NombreTipoPropiedad').val(selectedRow.NOMBRETIPOPROPIEDAD);
+                    $('#EstadoTipoPropiedad').data('kendoComboBox').value(selectedRow.ESTADOTIPOPROPIEDAD ? "1" : "0");
+                    $('#EstadoTipoPropiedadOriginal').val(selectedRow.ESTADOTIPOPROPIEDAD);
+
+                    if (!selectedRow.ESTADOTIPOPROPIEDAD) {
+                        $('#EstadoTipoPropiedad').data('kendoComboBox').enable(true);
+                    } else {
+                        document.getElementById('eliminar').disabled = '';
+                    }
+                }
+
+                function cancelarEdicionTipo() {
+                    $('#cancelar').hide();
+                    document.getElementById('guardar').disabled = '';
+                    document.getElementById('actualizar').disabled = 'disabled';
+                    document.getElementById('eliminar').disabled = 'disabled';
+
+                    $('#EstadoTipoPropiedad').data('kendoComboBox').enable(false);
+
+                    $('#IdTipoPropiedad').val(0);
+                    $('#NombreTipoPropiedad').val('');
+                    $('#EstadoTipoPropiedad').data('kendoComboBox').value("0");
+                    $('#EstadoTipoPropiedadOriginal').val('');
+                }
+
+                function actualizarTipo() {
+                    var idTipoParam = $('#IdTipoPropiedad').val();
+                    var nombreTipoParam = $('#NombreTipoPropiedad').val();
+                    var estadoTipoParam = $('#EstadoTipoPropiedad').data('kendoComboBox').value();
+
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("ActualizarTiposPropiedad", "Catalogo")',
+                        data: { idTipo: idTipoParam, nombre: nombreTipoParam, estado: estadoTipoParam },
+                        success: function (result) {
+                            if (result == "") {
+                                cancelarEdicionTipo();
+                                cargarGrid();
+                            }
+                        },
+                        error: function (err) {
+                            alert('Error al actualizar provincia: ' + err.responseJSON);
+                        }
+                    });
+                }
+
+                function guardarTipo() {
+                    var nombreTipoParam = $('#NombreTipoPropiedad').val();
+
+                    if (nombreTipoParam == "") {
+                        alert("Existen campos vacios, llenalos para continuar.")
+                    } else {
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("GuardarTiposPropiedad", "Catalogo")',
+                            data: { nombre: nombreTipoParam },
+                            success: function (result) {
+                                if (result == "") {
+                                    cancelarEdicionTipo();
+                                    cargarGrid();
+                                }
+                            },
+                            error: function (err) {
+                                alert('Error al guardar provincia: ' + err.responseJSON);
+                            }
+                        });
+                    }
+                }
+
+                function eliminarTipo() {
+                    var idTipoParam = $('#IdTipoPropiedad').val();
+
+                    if (idTipoParam == "") {
+                        alert("No ha seleccionado ningun registro para eliminar.")
+                    } else {
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("EliminarTipoPropiedad", "Catalogo")',
+                            data: { idTipo: idTipoParam },
+                            success: function (result) {
+                                if (result == "") {
+                                    cancelarEdicionTipo();
+                                    cargarGrid();
+                                }
+                            },
+                            error: function (err) {
+                                alert('Error al eliminar provincia: ' + err.responseJSON);
+                            }
+                        });
+                    }
+                }
+
+                function cargarGrid() {
+                    $('#GridTipos').data('kendoGrid').dataSource.read();
+                }
+            </script>
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <table style="width: 80%">
+                    <tr>
+                        <td colspan="3">
+                            @(
+                                Html.Kendo()
+                                .Grid<InmobiliariaRB.Model.Shared.TipoPropiedad>()
+                                .Name("GridTipos")
+                                .Columns(c =>
+                                {
+                                    c.Bound(col => col.IDTIPOPROPIEDAD).Hidden();
+                                    c.Bound(col => col.NOMBRETIPOPROPIEDAD).Title("Código");
+                                    c.Bound(col => col.ESTADOTIPOPROPIEDAD).Title("Estado").ClientTemplate("#: ESTADOTIPOPROPIEDAD ? 'Activo' : 'Inactivo' #");
+                                })
+                                .Selectable()
+                                .DataSource(dataBinding => dataBinding.Ajax()
+                                    .Read("CargarGridTiposPropiedad", "Catalogo"))
+                                .Events(events => events.Change("onRowSelectedTipo"))
+                                .Scrollable()
+                            )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width:20%">
+                            Nombre:
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(m => m.NombreTipoPropiedad, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.NombreTipoPropiedad, "", new { @class = "text-danger" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Estado:
+                        </td>
+                        <td>
+                            @Html.Kendo().ComboBoxFor(model => model.EstadoTipoPropiedad).BindTo(new SelectList(estadosTipos, "Value", "Text")).Enable(false)
+                        </td>
+                    </tr>
+                </table>
+                <hr />
+                <table>
+                    <tr>
+                        <td>
+                            <input type="button" id="guardar" value="Guardar" class="btn btn-default" onclick="guardarTipo()" />
+                            <input type="button" id="actualizar" value="Actualizar" class="btn btn-default" disabled onclick="actualizarTipo()" />
+                            <input type="button" id="eliminar" value="Eliminar" class="btn btn-default" disabled onclick="eliminarTipo()" />
+                            <input type="button" id="cancelar" value="Cancelar" class="btn btn-default" onclick="cancelarEdicionTipo()" style="display:none" />
+                            <input type="button" id="limpiar" value="Limpiar" class="btn btn-default" onclick="cancelarEdicionTipo()" />
+                        </td>
+                    </tr>
+                </table>
+                @Html.HiddenFor(m => m.IdTipoPropiedad)
+                @Html.HiddenFor(m => m.EstadoTipoPropiedadOriginal)
+            }
+        </section>
+    </div>
+</div>
