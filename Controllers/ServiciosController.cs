@@ -44,5 +44,56 @@ namespace InmobiliariaRB.Controllers
 
             return record;
         }
+
+        [HttpGet]
+        [ActionName("ObtenerClientes")]
+        public IEnumerable<Cliente> ObtenerClientes()
+        {
+            AdministracionCore objAdministracion = new AdministracionCore();
+
+            var clientes = objAdministracion.ConsultarClientes();
+
+            var respuesta = new List<Cliente>();
+
+            respuesta.AddRange(clientes);
+
+            var record = respuesta.ToArray();
+
+            return record;
+        }
+
+        [HttpGet]
+        [ActionName("ObtenerPropietarios")]
+        public IEnumerable<Propietario> ObtenerPropietarios()
+        {
+            AdministracionCore objAdministracion = new AdministracionCore();
+
+            var propietarios = objAdministracion.ConsultarPropietarios();
+
+            var respuesta = new List<Propietario>();
+
+            respuesta.AddRange(propietarios);
+
+            var record = respuesta.ToArray();
+
+            return record;
+        }
+
+        [HttpGet]
+        [ActionName("ObtenerUsuarios")]
+        public IEnumerable<Usuario> ObtenerUsuarios()
+        {
+            SeguridadCore objSeguridad = new SeguridadCore();
+
+            var usuarios = objSeguridad.ConsultarUsuarios();
+
+            var respuesta = new List<Usuario>();
+
+            respuesta.AddRange(usuarios);
+
+            var record = respuesta.ToArray();
+
+            return record;
+        }
     }
 }
